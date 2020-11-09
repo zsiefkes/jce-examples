@@ -6,6 +6,7 @@
 
 
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -34,11 +35,31 @@ import javax.crypto.spec.IvParameterSpec;
 public class DESSimple {
     
     private SecretKey secretkey; 
+//    private String keyFile;
     
-    
-    public DESSimple() throws NoSuchAlgorithmException 
+    public DESSimple(String keyFileName) throws NoSuchAlgorithmException, IOException, ClassNotFoundException 
     {
-        generateKey();
+        // search for key with provided filename. if none exists, generate one and save to disk.
+    	File keyFile = new File(keyFileName);
+    	if (keyFile.exists()) {
+			FileInputStream fileStream = new FileInputStream(keyFileName);
+			ObjectInputStream inputStream = new ObjectInputStream(fileStream);
+			// Read the object
+			SecretKey key = (SecretKey)inputStream.readObject();
+			inputStream.close();
+			// set key
+			this.setSecretkey(key);
+    	} else {
+			generateKey();
+			// want to save key to file now. as an object, not as textual data. use ObjectOutputStream/ObjectInputStream
+			// from https://www.programiz.com/java-programming/objectoutputstream:
+			// Creates a FileOutputStream where objects from ObjectOutputStream are written
+			FileOutputStream fileStream = new FileOutputStream(keyFileName);
+			ObjectOutputStream objStream = new ObjectOutputStream(fileStream);
+			// write object to output stream
+			objStream.writeObject(this.getSecretkey());
+			objStream.close();
+    	}
     }
     
     

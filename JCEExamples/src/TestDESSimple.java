@@ -19,6 +19,9 @@ import javax.crypto.Cipher;
  */
 public class TestDESSimple {
 
+	// filename for encryption key object saved to disk
+	private static String keyFile = "key-2";
+	
     /**
      * @param args the command line arguments
      */
@@ -26,13 +29,11 @@ public class TestDESSimple {
         // TODO code application logic here
         try
         {
-//        	DES des1 = new DES();
-            DESSimple des1 = new DESSimple();
+            DESSimple des1 = new DESSimple(keyFile);
             String msg = "Welcome everybody. This is Ali :)";        
             
             System.out.println("The plain text: "+msg);            
             byte[] encText = des1.encrypt(msg);            
-//            System.out.println("The DES encrypted message 64: "+ (new BASE64Encoder().encode(encText)));
             System.out.println("The DES encrypted message 64: "+ (Base64.getEncoder().encodeToString(encText)));
             String decText = des1.decrypt(encText);
             System.out.println("The DES decrypted message: "+decText);
